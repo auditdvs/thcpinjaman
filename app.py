@@ -39,6 +39,14 @@ def format_kelompok(kelompok):
     except (ValueError, TypeError):
         return str(kelompok)
 
+def format_phone(x):            
+    if pd.isna(x):
+        return ''
+    x = str(x).strip().split('.')[0] 
+    if not x.startswith('0'):
+        x = '0' + x
+    return x
+
 ## SESI UPLOAD FILE   
 uploaded_files = st.file_uploader("Upload files", accept_multiple_files=True, type=['xlsx'])
 
@@ -66,7 +74,7 @@ if uploaded_files:
             df_PDR[col] = pd.to_datetime(df_PDR[col]).dt.strftime('%d%m%Y')
         df_PDR['DUMMY'] = df_PDR['ID'].astype(str) + '' + df_PDR['PENGAJUAN']
         df_PDR['CENTER'] = df_PDR['CENTER'].astype(str).str[:3]
-        df_PDR['PHONE'] = df_PDR['PHONE'].astype(str).apply(lambda x: '0' + x if not x.startswith('0') else x)
+        df_PDR['PHONE'] = df_PDR['PHONE'].apply(format_phone)
 
         rename_dict = {
         'PINJAMAN MIKRO BISNIS': 'PINJAMAN MIKROBISNIS'
